@@ -610,11 +610,11 @@ function buildBoard(orientation) {
 
       if (cfg.showNotation === true) {
         // alpha notation
-        if ((orientation === 'white' && row === 1) ||
-            (orientation === 'black' && row === 8)) {
-          html += '<div class="' + CSS.notation + ' ' + CSS.alpha + '">' +
-            alpha[j] + '</div>';
-        }
+//         if ((orientation === 'white' && row === 1) ||
+//             (orientation === 'black' && row === 8)) {
+//           html += '<div class="' + CSS.notation + ' ' + CSS.alpha + '">' +
+//             alpha[j] + '</div>';
+//         }
         
         if(cfg.showCoordinate === true)
         {
@@ -623,10 +623,10 @@ function buildBoard(orientation) {
         }
 
         // numeric notation
-        if (j === 0) {
-          html += '<div class="' + CSS.notation + ' ' + CSS.numeric + '">' +
-            row + '</div>';
-        }
+//         if (j === 0) {
+//           html += '<div class="' + CSS.notation + ' ' + CSS.numeric + '">' +
+//             row + '</div>';
+//         }
       }
       
       //coordinate notation

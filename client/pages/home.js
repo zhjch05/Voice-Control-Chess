@@ -1,4 +1,8 @@
 Template.home.rendered = function(){
+  makeLog = function(content){
+    $('#logspace').append('<br/>'+content);
+  }
+  
 	//create dict
 	alpha = ['a','b','c','d','e','f','g','h']
 	num = ['1', '2' , '3' , '4', '5' , '6' , '7' , '8'];
@@ -185,20 +189,24 @@ Template.home.rendered = function(){
 		{
 			var string1 = cmd.substring(0,cmd.indexOf("to"));
 			var string2 = cmd.substring(cmd.indexOf("to")+2);
-			for(var i=0;i<result.length;i++)
+			var indicator=false;
+      for(var i=0;i<result.length;i++)
 			{
 				if(string1.indexOf(result[i])>-1)
 				{
 					dict+=result[i];
 					dict+="-";
+          indicator = true;
 					piecefrom=result[i];
 					break;
 				}
 			}
-			if(dict.indexOf("-")<=-1)
+			if(indicator === false)
 			{
-				alert("Failed");
+				//alert("Failed");
+        makeLog('Failed');
 				console.log("Failure. dict="+dict);
+        return;
 			}
 			var indicator=false;
 			for(var i=0;i<result.length;i++)
@@ -213,27 +221,32 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-				alert("Failed");
+				//alert("Failed");
+        makeLog('Failed');
 				console.log("Failure. dict="+dict);
+        return;
 			}
 		}
 		else if(cmd.indexOf("takes")>-1)
 		{
 			var string1 = cmd.substring(0,cmd.indexOf("takes"));
 			var string2 = cmd.substring(cmd.indexOf("takes")+2);
+      var indicator = false;
 			for(var i=0;i<result.length;i++)
 			{
 				if(string1.indexOf(result[i])>-1)
 				{
 					dict+=result[i];
 					dict+="-";
+          indicator = true;
 					piecefrom=result[i];
 					break;
 				}
 			}
-			if(dict.indexOf("-")<=-1)
+			if(indicator === false)
 			{
-				alert("Failed");
+				//alert("Failed");
+        makeLog('Failed');
 				console.log("Failure. dict="+dict);
 			}
 			var indicator=false;
@@ -249,7 +262,8 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-				alert("Failed");
+				//alert("Failed");
+        makeLog('Failed');
 				console.log("Failure. dict="+dict);
 			}
 		}
@@ -257,19 +271,22 @@ Template.home.rendered = function(){
 		{
 			var string1 = cmd.substring(0,cmd.indexOf("take"));
 			var string2 = cmd.substring(cmd.indexOf("take")+4);
+      var indicator = false;
 			for(var i=0;i<result.length;i++)
 			{
 				if(string1.indexOf(result[i])>-1)
 				{
 					dict+=result[i];
 					dict+="-";
+          indicator = true;
 					piecefrom=result[i];
 					break;
 				}
 			}
-			if(dict.indexOf("-")<=-1)
+			if(indicator === false)
 			{
-				alert("Failed");
+				//alert("Failed");
+        makeLog('Failed');
 				console.log("Failure. dict="+dict);
 			}
 			var indicator=false;
@@ -285,7 +302,8 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-				alert("Failed");
+				//alert("Failed");
+        makeLog('Failed');
 				console.log("Failure. dict="+dict);
 			}
 		}
@@ -294,17 +312,20 @@ Template.home.rendered = function(){
 		var piece1=game.get(piecefrom);
 		if(piece1 === null)
 		{
-			alert("No piece there!");
+			//alert("No piece there!");
+      makeLog('No piece there!');
 			return;
 		}
 	  	if(game.game_over() === true)
 	  	{
-	  		alert("Illegal move -- game is already over");
+	  		//alert("Illegal move -- game is already over");
+        makeLog('Illegal move -- game is already over');
 	  		return;
 	  	}
 	  	else if(piece1.color != game.turn())
 	  	{
-	  		alert("Illegal move -- it is not your turn");	
+	  		//alert("Illegal move -- it is not your turn");
+        makeLog('Illegal move -- it is not your turn');
 	  	}
 	  	else //correct turn
 	  	{
@@ -315,11 +336,13 @@ Template.home.rendered = function(){
 	  		});
 	  		if (move === null) 
 	  		{
-	  			alert("Illegal move -- no pass");
+	  			//alert("Illegal move -- no pass");
+          makeLog('Illegal move -- no pass');
 	  			return;
 	  		}
 	  		myboard.position(game.fen());
 	  		updateStatus();
+        makeLog('Moved: from: '+piecefrom+' to: '+pieceto);
 	  	}
 	}
 };
