@@ -23,6 +23,22 @@ Template.home.rendered = function(){
 
 	// do not pick up pieces if the game is over
 	// only pick up pieces for the side to move
+  
+  makeTurnLog = function(){
+    if(game.game_over() === true)
+      {
+        makeLog('Game is over.');
+      }
+    else if(game.turn() === 'w')
+      {
+        makeLog('It is now white\'s turn');
+      }
+    else if(game.turn() === 'b')
+      {
+        makeLog('It is now black\'s turn');
+      }
+  }
+  
 	var onDragStart = function(source, piece, position, orientation) {
 	  if (game.game_over() === true ||
 	      (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -38,10 +54,12 @@ Template.home.rendered = function(){
 	    to: target,
 	    promotion: 'q' // NOTE: always promote to a queen for example simplicity
 	  });
-
+    
 	  // illegal move
 	  if (move === null) return 'snapback';
 	  updateStatus();
+    makeLog('Moved with mouse: from: '+source+' to: '+target);
+    makeTurnLog();
 	};
 
 	// update the board position after the piece snap 
@@ -94,6 +112,7 @@ Template.home.rendered = function(){
 	};
 	myboard = new ChessBoard('board', cfg);
 	updateStatus();
+  makeTurnLog();
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -343,6 +362,7 @@ Template.home.rendered = function(){
 	  		myboard.position(game.fen());
 	  		updateStatus();
         makeLog('Moved: from: '+piecefrom+' to: '+pieceto);
+        makeTurnLog();
 	  	}
 	}
 };
