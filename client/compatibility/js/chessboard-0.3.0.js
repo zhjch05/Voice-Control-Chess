@@ -417,6 +417,11 @@ function expandConfig() {
   if (cfg.showNotation !== false) {
     cfg.showNotation = true;
   }
+  
+  // new feature by Team MemoryChess, all coordinates notations, default false
+  if (cfg.showCoordinate !== true){
+    cfg.showCoordinate = false;
+  }
 
   // default for draggable is false
   if (cfg.draggable !== true) {
@@ -610,12 +615,23 @@ function buildBoard(orientation) {
           html += '<div class="' + CSS.notation + ' ' + CSS.alpha + '">' +
             alpha[j] + '</div>';
         }
+        
+        if(cfg.showCoordinate === true)
+        {
+          html += '<div class="' + CSS.notation + ' ' + 'coordinate-xx111' + '">' + alpha[j] + row + '</div>';
+          console.log(alpha[j]+row);
+        }
 
         // numeric notation
         if (j === 0) {
           html += '<div class="' + CSS.notation + ' ' + CSS.numeric + '">' +
             row + '</div>';
         }
+      }
+      
+      //coordinate notation
+      if (cfg.showCoordinate === true) {
+        
       }
 
       html += '</div>'; // end .square

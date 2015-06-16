@@ -85,7 +85,8 @@ Template.home.rendered = function(){
 	  position: 'start',
 	  onDragStart: onDragStart,
 	  onDrop: onDrop,
-	  onSnapEnd: onSnapEnd
+	  onSnapEnd: onSnapEnd,
+    showCoordinate: true
 	};
 	myboard = new ChessBoard('board', cfg);
 	updateStatus();
