@@ -57,12 +57,16 @@ Template.home.rendered = function(){
 
 	  // checkmate?
 	  if (game.in_checkmate() === true) {
+	    var msg = new SpeechSynthesisUtterance('Checkmate');
+		window.speechSynthesis.speak(msg);
 	    status = 'Game over, ' + moveColor + ' is in checkmate.';
 	  }
 
 	  // draw?
 	  else if (game.in_draw() === true) {
 	    status = 'Game over, drawn position';
+	    var msg = new SpeechSynthesisUtterance('The game is a draw');
+		window.speechSynthesis.speak(msg);
 	  }
 
 	  // game still on
@@ -71,6 +75,8 @@ Template.home.rendered = function(){
 
 	    // check?
 	    if (game.in_check() === true) {
+	    var msg = new SpeechSynthesisUtterance('Check');
+		window.speechSynthesis.speak(msg);
 	      status += ', ' + moveColor + ' is in check';
 	    }
 	  }
@@ -181,6 +187,7 @@ Template.home.rendered = function(){
 		cmd = cmd.toLowerCase();
 		cmd = cmd.replace(/\s+/g, '');
 		if(cmd.indexOf("to")>-1)
+	
 		{
 			var string1 = cmd.substring(0,cmd.indexOf("to"));
 			var string2 = cmd.substring(cmd.indexOf("to")+2);
@@ -293,7 +300,8 @@ Template.home.rendered = function(){
 		var piece1=game.get(piecefrom);
 		if(piece1 === null)
 		{
-			alert("No piece there!");
+			var msg = new SpeechSynthesisUtterance('No piece there');
+			window.speechSynthesis.speak(msg);
 			return;
 		}
 	  	if(game.game_over() === true)
@@ -303,10 +311,12 @@ Template.home.rendered = function(){
 	  	}
 	  	else if(piece1.color != game.turn())
 	  	{
-	  		alert("Illegal move -- it is not your turn");	
+	  		var msg = new SpeechSynthesisUtterance('It is not your turn');
+			window.speechSynthesis.speak(msg);	
 	  	}
 	  	else //correct turn
 	  	{
+
 	  		var move = game.move({
 	    	from: piecefrom,
 	    	to: pieceto,
@@ -317,8 +327,12 @@ Template.home.rendered = function(){
 	  			alert("Illegal move -- no pass");
 	  			return;
 	  		}
+
 	  		myboard.position(game.fen());
 	  		updateStatus();
+	  		var msg = new SpeechSynthesisUtterance(cmd);
+			window.speechSynthesis.speak(msg);
+	  			
 	  	}
 	}
 };
