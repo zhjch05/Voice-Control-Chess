@@ -1,6 +1,10 @@
 Template.home.rendered = function(){
+  
   makeLog = function(content){
-    $('#logspace').append('<br/>'+content);
+    $('#logspace').append('<br/><br/>'+content);
+    //$('#scrollpanel').scrollTop($('#scrollpanel').height());
+    scrollValue += $('#scrollpanel').height()/3;
+    $('#scrollpanel').animate({ scrollTop: scrollValue }, "slow");
   }
   
 	//create dict
@@ -112,10 +116,16 @@ Template.home.rendered = function(){
 	};
 	myboard = new ChessBoard('board', cfg);
 	updateStatus();
+  board_height = $("#board").height();
+  $("#consolepanel").height(board_height);
+  $("#consolepanelbody").height($("#consolepanel").height()-$("#consolepanelheading").height());
+  $("#row2").height($("#consolepanelbody").height()-$("#row1").height()-$("#consolepanelheading").height()-30);
+  scrollValue = 0;
   makeTurnLog();
+  
 
 
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VOICE RECOGNITION
 
 	final_transcript = '';
@@ -193,8 +203,10 @@ Template.home.rendered = function(){
 	  recognition.start();
 	  final_span.innerHTML = '';
 	  interim_span.innerHTML = '';
-	}
-
+	};
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
 	performMove = function(MYcmd){
 		
 	  $('#icommand').val('');
@@ -375,6 +387,7 @@ Template.home.events({
 	},
 
 	'submit #homeform': function(event){
+    console.log('xxxxx');
 		var cmd = event.target.inputcommand.value;
 		event.preventDefault();
 		performMove(cmd);
