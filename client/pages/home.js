@@ -62,7 +62,7 @@ Template.home.rendered = function(){
 	  // illegal move
 	  if (move === null) return 'snapback';
 	  updateStatus();
-    makeLog('Moved with mouse: from: '+source+' to: '+target);
+    makeLog('Moved with mouse: from '+source+' to '+target);
     makeTurnLog();
 	};
 
@@ -373,7 +373,7 @@ Template.home.rendered = function(){
 	  		}
 	  		myboard.position(game.fen());
 	  		updateStatus();
-        makeLog('Moved: from: '+piecefrom+' to: '+pieceto);
+        makeLog('Moved: from '+piecefrom+' to '+pieceto);
         makeTurnLog();
 	  	}
 	}
