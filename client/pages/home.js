@@ -3,8 +3,11 @@ Template.home.rendered = function(){
   makeLog = function(content){
     $('#logspace').append('<br/><br/>'+content);
     //$('#scrollpanel').scrollTop($('#scrollpanel').height());
-    scrollValue += $('#scrollpanel').height()/3;
-    $('#scrollpanel').animate({ scrollTop: scrollValue }, "slow");
+    $('#scrollpanel').animate({ scrollTop: $('#logspace').height() }, "slow");
+  }
+  
+  fireSense = function(MYcmd){
+    $('#instructor').text(MYcmd);
   }
   
 	//create dict
@@ -18,12 +21,32 @@ Template.home.rendered = function(){
 			result[idx++]=alpha[i]+num[j];
 		}
 	}
+  
+  //instructor
+  $('#instructor').text('Ready');
 
 	//get rid of the logs things
 	game = new Chess()/*,
 	  statusEl = $('#status'),
 	  fenEl = $('#fen'),
 	  pgnEl = $('#pgn')*/;
+  
+  
+  var removeGreySquares = function() {
+  $('#board .square-55d63').css('background', '');
+  };
+
+  var greySquare = function(square) {
+  var squareEl = $('#board .square-' + square);
+  
+  var background = '#93dbd0';
+  if (squareEl.hasClass('black-3c85d') === true) {
+    background = '#86b09b';
+  }
+
+  squareEl.css('background', background);
+};
+  
 
 	// do not pick up pieces if the game is over
 	// only pick up pieces for the side to move
@@ -52,6 +75,7 @@ Template.home.rendered = function(){
 	};
 
 	var onDrop = function(source, target) {
+    removeGreySquares();
 	  // see if the move is legal
 	  var move = game.move({
 	    from: source,
@@ -105,6 +129,29 @@ Template.home.rendered = function(){
 	  // fenEl.html(game.fen());
 	  // pgnEl.html(game.pgn());
 	};
+  
+  onMouseoverSquare = function(square, piece) {
+  // get list of possible moves for this square
+  var moves = game.moves({
+    square: square,
+    verbose: true
+  });
+
+  // exit if there are no moves available for this square
+  if (moves.length === 0) return;
+
+  // highlight the square they moused over
+  greySquare(square);
+
+  // highlight the possible squares for this piece
+  for (var i = 0; i < moves.length; i++) {
+    greySquare(moves[i].to);
+  }
+  };
+
+  var onMouseoutSquare = function(square, piece) {
+  removeGreySquares();
+  };
 
 	var cfg = {
 	  draggable: true,
@@ -112,6 +159,8 @@ Template.home.rendered = function(){
 	  onDragStart: onDragStart,
 	  onDrop: onDrop,
 	  onSnapEnd: onSnapEnd,
+    onMouseoutSquare: onMouseoutSquare,
+    onMouseoverSquare: onMouseoverSquare,
     showCoordinate: true
 	};
 	myboard = new ChessBoard('board', cfg);
@@ -119,9 +168,205 @@ Template.home.rendered = function(){
   board_height = $("#board").height();
   $("#consolepanel").height(board_height);
   $("#consolepanelbody").height($("#consolepanel").height()-$("#consolepanelheading").height());
-  $("#row2").height($("#consolepanelbody").height()-$("#row1").height()-$("#consolepanelheading").height()-30);
+  $("#row2").height($("#consolepanelbody").height()-$("#row1").height()-$("#consolepanelheading").height()-60);
   scrollValue = 0;
   makeTurnLog();
+  
+  autoSense = function(MYcmd){
+    removeGreySquares();
+    fireSense('Ready');
+    var cmd = MYcmd;
+    cmd = cmd.trim();
+		cmd = cmd.toLowerCase();
+		cmd = cmd.replace(/\s+/g, '');
+		if(cmd.indexOf("to")>-1)
+		{
+			var string1 = cmd.substring(0,cmd.indexOf("to"));
+			var string2 = cmd.substring(cmd.indexOf("to")+2);
+			var indicator=false;
+      for(var i=0;i<result.length;i++)
+			{
+				if(string1.indexOf(result[i])>-1)
+				{
+					dict+=result[i];
+					dict+="-";
+          indicator = true;
+					piecefrom=result[i];
+					break;
+				}
+			}
+			if(indicator === false)
+			{
+				//alert("Failed");
+        makeLog('Failed');
+				console.log("Failure. dict="+dict);
+        return;
+			}
+			var indicator=false;
+			for(var i=0;i<result.length;i++)
+			{
+				if(string2.indexOf(result[i])>-1)
+				{
+					dict+=result[i];
+					indicator = true;
+					pieceto=result[i];
+					break;
+				}
+			}
+			if(indicator === false)
+			{
+				//alert("Failed");
+        makeLog('Failed');
+				console.log("Failure. dict="+dict);
+        return;
+			}
+		}
+		else if(cmd.indexOf("takes")>-1)
+		{
+			var string1 = cmd.substring(0,cmd.indexOf("takes"));
+			var string2 = cmd.substring(cmd.indexOf("takes")+2);
+      var indicator = false;
+			for(var i=0;i<result.length;i++)
+			{
+				if(string1.indexOf(result[i])>-1)
+				{
+					dict+=result[i];
+					dict+="-";
+          indicator = true;
+					piecefrom=result[i];
+					break;
+				}
+			}
+			if(indicator === false)
+			{
+				//alert("Failed");
+        makeLog('Failed');
+				console.log("Failure. dict="+dict);
+			}
+			var indicator=false;
+			for(var i=0;i<result.length;i++)
+			{
+				if(string2.indexOf(result[i])>-1)
+				{
+					dict+=result[i];
+					indicator = true;
+					pieceto=result[i];
+					break;
+				}
+			}
+			if(indicator === false)
+			{
+				//alert("Failed");
+        makeLog('Failed');
+				console.log("Failure. dict="+dict);
+			}
+		}
+		else if(cmd.indexOf("take")>-1)
+		{
+			var string1 = cmd.substring(0,cmd.indexOf("take"));
+			var string2 = cmd.substring(cmd.indexOf("take")+4);
+      var indicator = false;
+			for(var i=0;i<result.length;i++)
+			{
+				if(string1.indexOf(result[i])>-1)
+				{
+					dict+=result[i];
+					dict+="-";
+          indicator = true;
+					piecefrom=result[i];
+					break;
+				}
+			}
+			if(indicator === false)
+			{
+				//alert("Failed");
+        makeLog('Failed');
+				console.log("Failure. dict="+dict);
+			}
+			var indicator=false;
+			for(var i=0;i<result.length;i++)
+			{
+				if(string2.indexOf(result[i])>-1)
+				{
+					dict+=result[i];
+					indicator = true;
+					pieceto=result[i];
+					break;
+				}
+			}
+			if(indicator === false)
+			{
+				//alert("Failed");
+        makeLog('Failed');
+				console.log("Failure. dict="+dict);
+			}
+		}
+    else{
+      var indicator = false;
+			for(var i=0;i<result.length;i++)
+			{
+				if(cmd.indexOf(result[i])>-1)
+				{
+          onlypiece = result[i];
+          indicator = true;
+					break;
+				}
+			}
+			if(indicator === true)
+			{
+        fireSense(onlypiece + ' selected');
+        onMouseoverSquare(onlypiece,'unknown');
+        return;
+			}
+      return;
+    }
+    
+    
+		console.log("Dict is now ->  :"+dict);
+		//test if legal
+		var piece1=game.get(piecefrom);
+		if(piece1 === null)
+		{
+			//alert("No piece there!");
+      makeLog('No piece there!');
+			return;
+		}
+	  	if(game.game_over() === true)
+	  	{
+	  		//alert("Illegal move -- game is already over");
+        makeLog('Illegal move -- game is already over');
+	  		return;
+	  	}
+	  	else if(piece1.color != game.turn())
+	  	{
+	  		//alert("Illegal move -- it is not your turn");
+        makeLog('Illegal move -- it is not your turn');
+	  	}
+	  	else //correct turn
+	  	{
+	  		var move = game.move({
+	    	from: piecefrom,
+	    	to: pieceto,
+	   		promotion: 'q' // NOTE: always promote to a queen for example simplicity
+	  		});
+	  		if (move === null) 
+	  		{
+	  			//alert("Illegal move -- no pass");
+          makeLog('Illegal move -- no pass');
+	  			return;
+	  		}
+	  		myboard.position(game.fen());
+	  		updateStatus();
+        makeLog('Moved: from '+piecefrom+' to '+pieceto);
+        makeTurnLog();
+	  	}
+    
+  }
+  
+  $('#icommand').keyup(function(){
+    //input command changed
+    autoSense($('#icommand').val());
+  });
   
 
 
@@ -205,7 +450,6 @@ Template.home.rendered = function(){
 	  interim_span.innerHTML = '';
 	};
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-  
   
 	performMove = function(MYcmd){
 		
