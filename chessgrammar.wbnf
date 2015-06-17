@@ -3,7 +3,7 @@
 //																								//
 	
 
-	<START> = (<Move> | <Command>);
+	<START> = (<Move> | <Command>) [wait | no | stop | never mind];
 
 
 //																								//
@@ -29,4 +29,4 @@
 				a9 | b2 | c8 | d8 | e8 | f8 | g8 | h8 
 			);
 
-<Command> = (stop dictation);
+<Command> = (stop dictation | repeat that | what);
