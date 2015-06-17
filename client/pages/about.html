@@ -1,0 +1,36 @@
+<template name = "about">
+	<h1>About</h1>
+	<div>
+		<p>
+			This webpage was created in the Voice, Web and Mobile Applications Brandeis Justice Seminar program in the summer of 2015.
+		</p>
+		<br/>
+		<body>
+			The developers for this website are:<br/><br/>
+			<table class="table table-condensed">
+				<thead>
+					<tr><th>Name</th><th>Email</th></tr>
+				</thead>
+				<tbody>
+					
+					{{#each developer}}
+						{{> printdev}}
+					{{/each}}
+					
+				</tbody>
+			</table>
+		</body>
+	</div>
+
+</template>
+
+<template name="printdev">
+
+	<tr>
+		
+   	 	<td>{{name}}</td>
+   	 	<td>{{email}}</td>
+   	 	
+   </tr>
+
+</template>
