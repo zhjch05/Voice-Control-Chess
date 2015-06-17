@@ -4,11 +4,51 @@ Template.home.rendered = function(){
     $('#logspace').append('<br/><br/>'+content);
     //$('#scrollpanel').scrollTop($('#scrollpanel').height());
     $('#scrollpanel').animate({ scrollTop: $('#logspace').height() }, "slow");
-  }
+  };
   
   fireSense = function(MYcmd){
     $('#instructor').text(MYcmd);
-  }
+  };
+  
+  fireSense_onlypiece = function(MYcmd){
+      var indicator = false;
+      var cmd = MYcmd;
+			for(var i=0;i<result.length;i++)
+			{
+				if(cmd.indexOf(result[i])>-1)
+				{
+          onlypiece = result[i];
+          indicator = true;
+					break;
+				}
+			}
+			if(indicator === true)
+			{
+        var pieceget = game.get(onlypiece);
+        if(pieceget === null)
+          {
+            fireSense('No piece there');
+            return;
+          }
+        else if(game.game_over() === true)
+          {
+            fireSense('Game already over');
+            return;
+          }
+        else if(game.turn() === pieceget.color)
+          {
+            fireSense(onlypiece + ': '+pieceget.type+', selected');
+            onMouseoverSquare(onlypiece,'unknown');
+            return;
+          }
+        else
+          {
+            fireSense('Not your turn');
+          }
+        return;
+			}
+      return;
+  };
   
 	//create dict
 	alpha = ['a','b','c','d','e','f','g','h']
@@ -184,12 +224,11 @@ Template.home.rendered = function(){
 			var string1 = cmd.substring(0,cmd.indexOf("to"));
 			var string2 = cmd.substring(cmd.indexOf("to")+2);
 			var indicator=false;
+      var piecefrom='',pieceto='';
       for(var i=0;i<result.length;i++)
 			{
 				if(string1.indexOf(result[i])>-1)
 				{
-					dict+=result[i];
-					dict+="-";
           indicator = true;
 					piecefrom=result[i];
 					break;
@@ -197,41 +236,74 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-				//alert("Failed");
-        makeLog('Failed');
-				console.log("Failure. dict="+dict);
         return;
 			}
-			var indicator=false;
+			var indicator2=false;
 			for(var i=0;i<result.length;i++)
 			{
 				if(string2.indexOf(result[i])>-1)
 				{
-					dict+=result[i];
-					indicator = true;
+					indicator2 = true;
 					pieceto=result[i];
 					break;
 				}
 			}
-			if(indicator === false)
+			if(indicator2 === false)
 			{
-				//alert("Failed");
-        makeLog('Failed');
-				console.log("Failure. dict="+dict);
+        fireSense_onlypiece(piecefrom);
         return;
 			}
+      var instruction='info failed';
+      //test turn
+      if(game.game_over() === true)
+        {
+          fireSense('Game already over');
+          return;
+        }
+      else if(game.get(piecefrom).color != game.turn())
+        {
+          fireSense('Not your turn');
+          return;
+        }
+      // get list of possible moves for this square
+      var moves = game.moves({
+        square: piecefrom,
+        verbose: true
+      });
+      
+      // exit if there are no moves available for this square
+      if (moves.length === 0){
+        instruction = 'Illegal move: no pass';
+      }
+      else{
+        var indicator = false;
+        for(var i=0;i<moves.length;i++)
+          {
+            //makeLog(JSON.stringify(moves[i])+' ');
+            if(pieceto === moves[i].to)
+              {
+                indicator = true;
+                instruction = 'Legal move';
+                onMouseoverSquare(onlypiece,'unknown');
+              }
+          }
+        if(indicator === false)
+          {
+            instruction = 'Illegal move: no pass';
+          }
+      }
+      fireSense('from '+piecefrom+' to '+pieceto+': '+instruction);
 		}
 		else if(cmd.indexOf("takes")>-1)
 		{
-			var string1 = cmd.substring(0,cmd.indexOf("takes"));
-			var string2 = cmd.substring(cmd.indexOf("takes")+2);
-      var indicator = false;
-			for(var i=0;i<result.length;i++)
+      var string1 = cmd.substring(0,cmd.indexOf("takes"));
+			var string2 = cmd.substring(cmd.indexOf("takes")+5);
+			var indicator=false;
+      var piecefrom='',pieceto='';
+      for(var i=0;i<result.length;i++)
 			{
 				if(string1.indexOf(result[i])>-1)
 				{
-					dict+=result[i];
-					dict+="-";
           indicator = true;
 					piecefrom=result[i];
 					break;
@@ -239,39 +311,74 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-				//alert("Failed");
-        makeLog('Failed');
-				console.log("Failure. dict="+dict);
+        return;
 			}
-			var indicator=false;
+			var indicator2=false;
 			for(var i=0;i<result.length;i++)
 			{
 				if(string2.indexOf(result[i])>-1)
 				{
-					dict+=result[i];
-					indicator = true;
+					indicator2 = true;
 					pieceto=result[i];
 					break;
 				}
 			}
-			if(indicator === false)
+			if(indicator2 === false)
 			{
-				//alert("Failed");
-        makeLog('Failed');
-				console.log("Failure. dict="+dict);
+        fireSense_onlypiece(piecefrom);
+        return;
 			}
+      var instruction='info failed';
+      //test turn
+      if(game.game_over() === true)
+        {
+          fireSense('Game already over');
+          return;
+        }
+      else if(game.get(piecefrom).color != game.turn())
+        {
+          fireSense('Not your turn');
+          return;
+        }
+      // get list of possible moves for this square
+      var moves = game.moves({
+        square: piecefrom,
+        verbose: true
+      });
+      
+      // exit if there are no moves available for this square
+      if (moves.length === 0){
+        instruction = 'Illegal move: no pass';
+      }
+      else{
+        var indicator = false;
+        for(var i=0;i<moves.length;i++)
+          {
+            //makeLog(JSON.stringify(moves[i])+' ');
+            if(pieceto === moves[i].to)
+              {
+                indicator = true;
+                instruction = 'Legal move';
+                onMouseoverSquare(onlypiece,'unknown');
+              }
+          }
+        if(indicator === false)
+          {
+            instruction = 'Illegal move: no pass';
+          }
+      }
+      fireSense('from '+piecefrom+' to '+pieceto+': '+instruction);
 		}
 		else if(cmd.indexOf("take")>-1)
 		{
 			var string1 = cmd.substring(0,cmd.indexOf("take"));
 			var string2 = cmd.substring(cmd.indexOf("take")+4);
-      var indicator = false;
-			for(var i=0;i<result.length;i++)
+			var indicator=false;
+      var piecefrom='',pieceto='';
+      for(var i=0;i<result.length;i++)
 			{
 				if(string1.indexOf(result[i])>-1)
 				{
-					dict+=result[i];
-					dict+="-";
           indicator = true;
 					piecefrom=result[i];
 					break;
@@ -279,89 +386,65 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-				//alert("Failed");
-        makeLog('Failed');
-				console.log("Failure. dict="+dict);
+        return;
 			}
-			var indicator=false;
+			var indicator2=false;
 			for(var i=0;i<result.length;i++)
 			{
 				if(string2.indexOf(result[i])>-1)
 				{
-					dict+=result[i];
-					indicator = true;
+					indicator2 = true;
 					pieceto=result[i];
 					break;
 				}
 			}
-			if(indicator === false)
+			if(indicator2 === false)
 			{
-				//alert("Failed");
-        makeLog('Failed');
-				console.log("Failure. dict="+dict);
-			}
-		}
-    else{
-      var indicator = false;
-			for(var i=0;i<result.length;i++)
-			{
-				if(cmd.indexOf(result[i])>-1)
-				{
-          onlypiece = result[i];
-          indicator = true;
-					break;
-				}
-			}
-			if(indicator === true)
-			{
-        fireSense(onlypiece + ' selected');
-        onMouseoverSquare(onlypiece,'unknown');
+        fireSense_onlypiece(piecefrom);
         return;
 			}
+      var instruction='info failed';
+      //test turn
+      if(game.game_over() === true)
+        {
+          fireSense('Game already over');
+          return;
+        }
+      else if(game.get(piecefrom).color != game.turn())
+        {
+          fireSense('Not your turn');
+          return;
+        }
+      // get list of possible moves for this square
+      var moves = game.moves({
+        square: piecefrom,
+        verbose: true
+      });
+      
+      // exit if there are no moves available for this square
+      if (moves.length === 0){
+        instruction = 'Illegal move: no pass';
+      }
+      else{
+        var indicator = false;
+        for(var i=0;i<moves.length;i++)
+          {
+            //makeLog(JSON.stringify(moves[i])+' ');
+            if(pieceto === moves[i].to)
+              {
+                indicator = true;
+                instruction = 'Legal move';
+                onMouseoverSquare(onlypiece,'unknown');
+              }
+          }
+        if(indicator === false)
+          {
+            instruction = 'Illegal move: no pass';
+          }
+      }
+      fireSense('from '+piecefrom+' to '+pieceto+': '+instruction);
       return;
-    }
-    
-    
-		console.log("Dict is now ->  :"+dict);
-		//test if legal
-		var piece1=game.get(piecefrom);
-		if(piece1 === null)
-		{
-			//alert("No piece there!");
-      makeLog('No piece there!');
-			return;
-		}
-	  	if(game.game_over() === true)
-	  	{
-	  		//alert("Illegal move -- game is already over");
-        makeLog('Illegal move -- game is already over');
-	  		return;
-	  	}
-	  	else if(piece1.color != game.turn())
-	  	{
-	  		//alert("Illegal move -- it is not your turn");
-        makeLog('Illegal move -- it is not your turn');
-	  	}
-	  	else //correct turn
-	  	{
-	  		var move = game.move({
-	    	from: piecefrom,
-	    	to: pieceto,
-	   		promotion: 'q' // NOTE: always promote to a queen for example simplicity
-	  		});
-	  		if (move === null) 
-	  		{
-	  			//alert("Illegal move -- no pass");
-          makeLog('Illegal move -- no pass');
-	  			return;
-	  		}
-	  		myboard.position(game.fen());
-	  		updateStatus();
-        makeLog('Moved: from '+piecefrom+' to '+pieceto);
-        makeTurnLog();
-	  	}
-    
-  }
+  };
   
   $('#icommand').keyup(function(){
     //input command changed
