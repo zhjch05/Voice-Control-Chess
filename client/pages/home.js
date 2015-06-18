@@ -131,7 +131,13 @@ Template.home.rendered = function(){
 			if(event.results[i][0].transcript.includes("stop dictation")){
 			  	recognition.stop();
 			}
-
+            //Accept move as the order to stop dictation
+            if(event.results[i][0].transcript.includes("action")){
+			  	recognition.stop();
+                console.log('final events.results[i][0].transcript = '+ JSON.stringify(event.results[i][0].transcript));
+			    var mycmd = final_transcript;
+                performMove(mycmd)
+			}
 	        if (event.results[i].isFinal) {
 
 	          final_transcript += 
@@ -140,6 +146,7 @@ Template.home.rendered = function(){
 			  console.log('final events.results[i][0].transcript = '+ JSON.stringify(event.results[i][0].transcript));
 			  var mycmd = final_transcript;
 			  performMove(mycmd);
+              
 	        } else {
 	          interim_transcript += 
 	 
@@ -327,14 +334,34 @@ Template.home.rendered = function(){
 	  			alert("Illegal move -- no pass");
 	  			return;
 	  		}
+            else{
 
 	  		myboard.position(game.fen());
 	  		updateStatus();
 	  		var msg = new SpeechSynthesisUtterance(cmd);
 			window.speechSynthesis.speak(msg);
+            var turn = piece1.color;
+            formSteps(turn, cmd);
+
 	  			
 	  	}
 	}
+    }
+    formSteps = function(turn, cmd){
+        Steps.allow({    
+        'insert': function (userId,doc) {
+
+            return true; 
+        }
+    })
+        
+        Steps.insert({
+            uid:Meteor.userId(),
+            color: turn,
+			movement: cmd,
+    })
+        console.log(Steps);
+    }
 };
 
 
@@ -348,5 +375,11 @@ Template.home.events({
 		var cmd = event.target.inputcommand.value;
 		event.preventDefault();
 		performMove(cmd);
+	}
+});
+
+Template.allSteps.helpers({
+	Steps: function(){
+		return Steps.find({uid:Meteor.userId()});
 	}
 });
