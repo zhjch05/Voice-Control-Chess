@@ -693,6 +693,19 @@ Template.home.rendered = function(){
 				console.log("Failure. dict="+dict);
 			}
 		}
+    else{
+      var indicator = false;
+      for(var i=0;i<result.length;i++)
+			{
+				if(cmd.indexOf(result[i])>-1)
+				{
+          indicator = true;
+					piecefrom=result[i];
+					break;
+				}
+			}
+      return;
+    }
 		console.log("Dict is now ->  :"+dict);
 		//test if legal
 		var piece1=game.get(piecefrom);
