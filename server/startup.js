@@ -1,6 +1,5 @@
 Meteor.startup(function () {
- //  // note, io(<port>) will create a http server for you
-	// var io = Npm.require('socket.io')(8888);
+  var io = Meteor.npmRequire("socket.io")(8888);
 
 	// io.on('connection', function (socket) {
 	//   io.emit('this', { will: 'be received by everyone'});

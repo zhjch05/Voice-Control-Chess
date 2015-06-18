@@ -13,4 +13,7 @@ service-configuration
 twbs:bootstrap
 
 fortawesome:fontawesome
-zhjch05:socket-io
+meteorhacks:npm
+
+
+npm-container
