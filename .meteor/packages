@@ -13,3 +13,5 @@ service-configuration
 twbs:bootstrap
 
 fortawesome:fontawesome
+zhjch05:socket-io
+joncursi:socket-io-client
