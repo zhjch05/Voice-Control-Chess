@@ -505,9 +505,18 @@ Template.home.rendered = function(){
 			  console.log("i="+i);
 
 			//Stops the dictation if it sees the phrase "stop dictation"
-			if(event.results[i][0].transcript.includes("stop dictation")){
-			  	recognition.stop();
+			if(event.results[i][0].transcript.includes("confirm")){
+        interim_transcript += event.results[i][0].transcript;
+        recognition.stop();
+        var mycmd = interim_transcript;
+			  performMove(mycmd);
+        return;
 			}
+       else if(event.results[i][0].transcript.includes("cancel")){
+         $('#icommand').val('');
+         recognition.stop();
+         return;
+       }
 
 	        if (event.results[i].isFinal) {
 
@@ -515,8 +524,7 @@ Template.home.rendered = function(){
 
 	          event.results[i][0].transcript.trim() +".\n";
 			  console.log('final events.results[i][0].transcript = '+ JSON.stringify(event.results[i][0].transcript));
-			  var mycmd = final_transcript;
-			  performMove(mycmd);
+			  
 	        } else {
 	          interim_transcript += 
 	 
@@ -524,10 +532,11 @@ Template.home.rendered = function(){
 			  console.log('interim events.results[i][0].transcript = '+ JSON.stringify(event.results[i][0].transcript));
 
 	        }
-	      }
-	      //final_transcript = capitalize(final_transcript);
-	      final_span.innerHTML = linebreak(final_transcript);
-	      interim_span.innerHTML = linebreak(interim_transcript);
+ 	      }
+// 	      //final_transcript = capitalize(final_transcript);
+// 	      final_span.innerHTML = linebreak(final_transcript);
+// 	      interim_span.innerHTML = linebreak(interim_transcript);
+          $('#icommand').val(interim_transcript);
     	  
 	    };
 	}
@@ -550,8 +559,6 @@ Template.home.rendered = function(){
 	  final_transcript = '';
 	  recognition.lang = 'en-US';
 	  recognition.start();
-	  final_span.innerHTML = '';
-	  interim_span.innerHTML = '';
 	};
 //////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -730,7 +737,7 @@ Template.home.rendered = function(){
 
 Template.home.events({
 
-	'click #start_button': function(event){
+	'click #spbutton': function(event){
 		startDictation(event);
 	},
 
