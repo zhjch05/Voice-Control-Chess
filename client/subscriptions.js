@@ -1,4 +1,7 @@
 Meteor.subscribe("userData");
 Meteor.subscribe("fenboards");
 Meteor.subscribe("theprofiles");
-Meteor.subscribe("theSteps");
+<<<<<<< HEAD
+=======
+Meteor.subscribe("thedevelopers");
+>>>>>>> master

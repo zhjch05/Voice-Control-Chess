@@ -98,10 +98,11 @@ Template.home.rendered = function(){
 
 
 ///////////////////////////////////////////////////////////////////////////
-	// VOICE RECOGNITION
+// VOICE RECOGNITION
 
 	final_transcript = '';
 	var recognizing = false;
+
 
 	if ('webkitSpeechRecognition' in window) {
 		console.log("webkit is available!");
@@ -339,6 +340,7 @@ Template.home.rendered = function(){
 	  		myboard.position(game.fen());
 	  		updateStatus();
 	  		var msg = new SpeechSynthesisUtterance(cmd);
+	  		
 			window.speechSynthesis.speak(msg);
             var turn = piece1.color;
             formSteps(turn, cmd);
