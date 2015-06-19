@@ -194,13 +194,19 @@ Template.home.rendered = function() {
         onMouseoverSquare: onMouseoverSquare,
         showCoordinate: true
     };
+    
+    //rendering board with cfg
     myboard = new ChessBoard('board', cfg);
+    
     updateStatus();
+    
+    //jQuery layout
     board_height = $("#board").height();
     $("#consolepanel").height(board_height);
     $("#consolepanelbody").height($("#consolepanel").height() - $("#consolepanelheading").height());
     $("#row2").height($("#consolepanelbody").height() - $("#row1").height() - $("#consolepanelheading").height() - 60);
-    scrollValue = 0;
+    
+    //start log
     makeTurnLog();
 
     autoSense = function(MYcmd) {
