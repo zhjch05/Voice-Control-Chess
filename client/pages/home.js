@@ -236,7 +236,7 @@ Template.home.rendered = function(){
 			}
 			if(indicator === false)
 			{
-        return;
+        		return;
 			}
 			var indicator2=false;
 			for(var i=0;i<result.length;i++)
