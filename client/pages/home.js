@@ -1,4 +1,52 @@
 Template.home.rendered = function() {
+	
+	preProcess = function(content) {
+		content = content.trim();
+        content = content.toLowerCase();
+        content = content.replace(/\s+/g, '');
+        return content;
+	}
+	
+	searchWord = function(content,word){
+		
+	}
+	
+	recoWord = function(content,word){
+		if (content.indexOf(word) > -1) {
+            var string1 = content.substring(0, content.indexOf(word));
+            var string2 = content.substring(content.indexOf(word) + word.length);
+            var indicator = false;
+            for (var i = 0; i < result.length; i++) {
+                if (string1.indexOf(result[i]) > -1) {
+                    dict += result[i];
+                    dict += "-";
+                    indicator = true;
+                    piecefrom = result[i];
+                    break;
+                }
+            }
+            if (indicator === false) {
+                //alert("Failed");
+                makeLog('Failed');
+                console.log("Failure. dict=" + dict);
+                return;
+            }
+            var indicator = false;
+            for (var i = 0; i < result.length; i++) {
+                if (string2.indexOf(result[i]) > -1) {
+                    dict += result[i];
+                    indicator = true;
+                    pieceto = result[i];
+                    break;
+                }
+            }
+            if (indicator === false) {
+                //alert("Failed");
+                makeLog('Failed');
+                console.log("Failure. dict=" + dict);
+                return;
+            }
+	}
 
     //@param: content, put the content into the log space.
     makeLog = function(content) {
@@ -245,7 +293,6 @@ Template.home.rendered = function() {
                 return;
             }
             var instruction = 'info failed';
-            //test turn
             if (game.game_over() === true) {
                 fireSense('Game already over');
                 return;
@@ -253,19 +300,15 @@ Template.home.rendered = function() {
                 fireSense('Not your turn');
                 return;
             }
-            // get list of possible moves for this square
             var moves = game.moves({
                 square: piecefrom,
                 verbose: true
             });
-
-            // exit if there are no moves available for this square
             if (moves.length === 0) {
                 instruction = 'Illegal move: no pass';
             } else {
                 var indicator = false;
                 for (var i = 0; i < moves.length; i++) {
-                    //makeLog(JSON.stringify(moves[i])+' ');
                     if (pieceto === moves[i].to) {
                         indicator = true;
                         instruction = 'Legal move';
@@ -306,7 +349,6 @@ Template.home.rendered = function() {
                 return;
             }
             var instruction = 'info failed';
-            //test turn
             if (game.game_over() === true) {
                 fireSense('Game already over');
                 return;
@@ -314,19 +356,15 @@ Template.home.rendered = function() {
                 fireSense('Not your turn');
                 return;
             }
-            // get list of possible moves for this square
             var moves = game.moves({
                 square: piecefrom,
                 verbose: true
             });
-
-            // exit if there are no moves available for this square
             if (moves.length === 0) {
                 instruction = 'Illegal move: no pass';
             } else {
                 var indicator = false;
                 for (var i = 0; i < moves.length; i++) {
-                    //makeLog(JSON.stringify(moves[i])+' ');
                     if (pieceto === moves[i].to) {
                         indicator = true;
                         instruction = 'Legal move';
@@ -367,7 +405,6 @@ Template.home.rendered = function() {
                 return;
             }
             var instruction = 'info failed';
-            //test turn
             if (game.game_over() === true) {
                 fireSense('Game already over');
                 return;
@@ -375,19 +412,15 @@ Template.home.rendered = function() {
                 fireSense('Not your turn');
                 return;
             }
-            // get list of possible moves for this square
             var moves = game.moves({
                 square: piecefrom,
                 verbose: true
             });
-
-            // exit if there are no moves available for this square
             if (moves.length === 0) {
                 instruction = 'Illegal move: no pass';
             } else {
                 var indicator = false;
                 for (var i = 0; i < moves.length; i++) {
-                    //makeLog(JSON.stringify(moves[i])+' ');
                     if (pieceto === moves[i].to) {
                         indicator = true;
                         instruction = 'Legal move';
@@ -419,7 +452,6 @@ Template.home.rendered = function() {
     }
 
     $('#icommand').keyup(function() {
-        //input command changed
         autoSense($('#icommand').val());
     });
 
@@ -516,14 +548,8 @@ Template.home.rendered = function() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     performMove = function(MYcmd) {
-
         $('#icommand').val('');
-        //parse goes there
-        var cmd = MYcmd;
-        //split/trim
-        cmd = cmd.trim();
-        cmd = cmd.toLowerCase();
-        cmd = cmd.replace(/\s+/g, '');
+        var cmd = preProcess(MYcmd);
         if (cmd.indexOf("to") > -1) {
             var string1 = cmd.substring(0, cmd.indexOf("to"));
             var string2 = cmd.substring(cmd.indexOf("to") + 2);
@@ -676,7 +702,6 @@ Template.home.events({
     },
 
     'submit #homeform': function(event) {
-        console.log('xxxxx');
         var cmd = event.target.inputcommand.value;
         event.preventDefault();
         performMove(cmd);
