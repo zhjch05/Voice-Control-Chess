@@ -7,45 +7,62 @@ Template.home.rendered = function() {
         return content;
 	}
 	
-	searchWord = function(content,word){
-		
+	searchWord = function(content){
+		var indicator = false, piece;
+        for (var i = 0; i < result.length; i++) {
+            if (content.indexOf(result[i]) > -1) {
+                indicator = true;
+                piece = result[i];
+                break;
+            }
+        }
+        if (indicator === false) {
+        	makeLog('Failed');
+            return false;
+        }
+        return piece;
 	}
 	
 	recoWord = function(content,word){
 		if (content.indexOf(word) > -1) {
             var string1 = content.substring(0, content.indexOf(word));
             var string2 = content.substring(content.indexOf(word) + word.length);
-            var indicator = false;
-            for (var i = 0; i < result.length; i++) {
-                if (string1.indexOf(result[i]) > -1) {
-                    dict += result[i];
-                    dict += "-";
-                    indicator = true;
-                    piecefrom = result[i];
-                    break;
-                }
-            }
-            if (indicator === false) {
-                //alert("Failed");
-                makeLog('Failed');
-                console.log("Failure. dict=" + dict);
+            piecefrom=searchWord(string1);
+            pieceto=searchWord(string2);
+            return {piecefrom:piecefrom,pieceto:pieceto};
+		}
+		return false;
+	}
+	
+	//trigger move through this
+	fireMove = function(piecefrom,pieceto){
+        //test if legal
+        var piece1 = game.get(piecefrom);
+        if (piece1 === null) {
+            makeLog('No piece there!');
+            return;
+        }
+        if (game.game_over() === true) {
+            makeLog('Illegal move -- game is already over');
+            return;
+        } else if (piece1.color != game.turn()) {
+            makeLog('Illegal move -- it is not your turn');
+        } else //correct turn
+        {
+            var move = game.move({
+                from: piecefrom,
+                to: pieceto,
+                promotion: 'q' // NOTE: always promote to a queen for example simplicity
+            });
+            if (move === null) {
+                makeLog('Illegal move -- no pass');
                 return;
             }
-            var indicator = false;
-            for (var i = 0; i < result.length; i++) {
-                if (string2.indexOf(result[i]) > -1) {
-                    dict += result[i];
-                    indicator = true;
-                    pieceto = result[i];
-                    break;
-                }
-            }
-            if (indicator === false) {
-                //alert("Failed");
-                makeLog('Failed');
-                console.log("Failure. dict=" + dict);
-                return;
-            }
+            myboard.position(game.fen());
+            updateStatus();
+            makeLog('Moved: from ' + piecefrom + ' to ' + pieceto);
+            makeTurnLog();
+        }
 	}
 
     //@param: content, put the content into the log space.
@@ -550,6 +567,28 @@ Template.home.rendered = function() {
     performMove = function(MYcmd) {
         $('#icommand').val('');
         var cmd = preProcess(MYcmd);
+        var reco_result = recoWord(cmd,'to');
+        if(reco_result === false)reco_result = recoWord(cmd,'takes');
+        else{
+        	if(reco_result.piecefrom!=false&&reco_result.pieceto!=false){
+        		fireMove(reco_result.piecefrom,reco_result.pieceto);
+        	}else return;
+        }
+        if(reco_result === false)reco_result = recoWord(cmd,'take');
+        else {
+        	if(reco_result.piecefrom!=false&&reco_result.pieceto!=false){
+        		fireMove(reco_result.piecefrom,reco_result.pieceto);
+        	}else return;
+        }
+        if(reco_result === false){
+        	return;
+        }
+        else {
+        	if(reco_result.piecefrom!=false&&reco_result.pieceto!=false){
+        		fireMove(reco_result.piecefrom,reco_result.pieceto);
+        	}else return;
+        }
+        
         if (cmd.indexOf("to") > -1) {
             var string1 = cmd.substring(0, cmd.indexOf("to"));
             var string2 = cmd.substring(cmd.indexOf("to") + 2);
