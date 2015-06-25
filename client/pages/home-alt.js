@@ -137,22 +137,26 @@ function makeLog(content) {
 };
 
 function makeTurnLog() {
-   if (game.game_over() === true) {
-       makeLog('Game is over.');
-   } else if (game.turn() === 'w') {
-       makeLog('It is now white\'s turn');
-   } else if (game.turn() === 'b') {
-       makeLog('It is now black\'s turn');
-   }
+    if (game.game_over() === true) {
+        makeLog('Game is over.');
+    }
+    else if (game.turn() === 'w') {
+        makeLog('It is now white\'s turn');
+    }
+    else if (game.turn() === 'b') {
+        makeLog('It is now black\'s turn');
+    }
 }
 
 function analyzer(MYcmd) {
     var cmd = preProcess(MYcmd);
     if (cmd.indexOf('cancel') > -1) {
         return;
-    } else if (cmd.indexOf('confirm') > -1) {
+    }
+    else if (cmd.indexOf('confirm') > -1) {
         action(cmd);
-    } else {
+    }
+    else {
         autoSense(cmd);
     }
 }
@@ -174,14 +178,16 @@ function performMove(MYcmd) {
     var results = MYcmd.match(/[a-h]\d/ig);
     if (results.length > 2) {
         makeLog('There seems more pieces than two you typed.');
-    } else if (results.length === 1) {
+    }
+    else if (results.length === 1) {
         makeLog('There seems only one piece you typed.');
-    } else if (results.length === 2) {
+    }
+    else if (results.length === 2) {
         var isLegal = testLegal(results[0], results[1]);
     }
     return false;
 }
 
 function testLegal(piecefrom, pieceto) {
-     
+
 }
