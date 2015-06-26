@@ -13,21 +13,32 @@ Template.profiles.events({
 		alert("Done!");
 	},
 	'click #sorybyS': function(event) {
-		Session.set("sortbyscore", "1");
+		if (Session.get("sortbyscore") === "") {
+			Session.set("sortbyscore", "1");
+		}
+		else {
+			Session.set("sortbyscore", "");
+		}
+	},
+	'click #filtertwo': function(event) {
+		if (Session.get("filtertwo") === "") {
+			Session.set("filtertwo", 2);
+		}
+		else {
+			Session.set("filtertwo", "");
+		}
 	}
 });
 
 Template.profiles.helpers({
 	person: function() {
-		if (Session.get("sortbyscore") === "") return Profiles.find({
-			uid: Meteor.userId()
-		});
-		else {
+		if (Session.get("sortbyscore") != "" && Session.get("filtertwo") != "") {
 			return Profiles.find({
-				uid: Meteor.userId()
+				uid: Meteor.userId(),
+				sortbyscore: Session.get("filtertwo")
 			}, {
 				sort: {
-					selfscore: Session.get("sortbyscore")
+					sortbyscore: Session.get("sortbyscore")
 				}
 			});
 		}
