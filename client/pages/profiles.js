@@ -1,7 +1,7 @@
 Template.profiles.events({
 	'submit #profilesform': function(event){
 		event.preventDefault();
-		var firstnameVar = event.target.firstname.value;
+		var firstnameVar = evengitt.target.firstname.value;
 		var lastnameVar = event.target.lastname.value;
 		var selfscoreVar = event.target.selfscore.value;
 		Profiles.insert({
@@ -14,7 +14,7 @@ Template.profiles.events({
 	}
 });
 
-Template.profiles.helpers({
+Template.maintablerow.helpers({
 	person: function(){
 		return Profiles.find({uid:Meteor.userId()});
 	}

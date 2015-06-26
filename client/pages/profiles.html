@@ -10,7 +10,28 @@
                          <input type="text" name="selfscore" placeholder="Self-eval score">
                          <input type="submit" class="btn btn-primary" value="Update">
                     </form>
+                    <hr/>
+                    <h1>Profiles</h1>
+                    <hr/>
+                    <table class="table table-hover">
+                         <thead>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Self-evaluation score</th>
+                         </thead>
+                         <tbody>
+                              {{#each person}} {{> maintablerow}} {{/each}}
+                         </tbody>
+                    </table>
                </div>
           </div>
      </div>
+</template>
+
+<template name="maintablerow">
+     <tr>
+		<td>{{firstname}}</td>
+		<td>{{lastname}}</td>
+		<td>{{selfscore}}</td>
+	</tr>
 </template>
