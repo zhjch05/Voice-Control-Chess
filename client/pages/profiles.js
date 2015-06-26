@@ -1,7 +1,7 @@
 Template.profiles.events({
 	'submit #profilesform': function(event){
 		event.preventDefault();
-		var firstnameVar = evengitt.target.firstname.value;
+		var firstnameVar = event.target.firstname.value;
 		var lastnameVar = event.target.lastname.value;
 		var selfscoreVar = event.target.selfscore.value;
 		Profiles.insert({
