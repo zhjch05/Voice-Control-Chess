@@ -38,5 +38,8 @@ Template.drawpanel.events({
      },
      'click #btnwhite': function(event) {
           defaultcolor = "#ffffff";
+     },
+     'click #btnclear': function(event) {
+          context.clearRect(0, 0, mycanvas.width, mycanvas.height);
      }
 });
