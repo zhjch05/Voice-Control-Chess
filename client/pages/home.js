@@ -186,6 +186,7 @@ Template.home.rendered = function(){
 		cmd = cmd.trim();
 		cmd = cmd.toLowerCase();
 		cmd = cmd.replace(/\s+/g, '');
+		cmd = errorCheck(cmd);
 		if(cmd.indexOf("to")>-1)
 	
 		{
@@ -336,6 +337,149 @@ Template.home.rendered = function(){
 	  	}
 	}
 };
+
+
+
+
+// Use the form: str = str.replaceAt(3, "a");
+String.prototype.replaceAt=function(index, character) {
+    return this.substr(0, index) + character + this.substr(index+character.length);
+}
+
+// Fixes possible errors in a string, makes the string more like a chess command.
+errorCheck = function(commandString){
+	
+	// Transform length 5 numbers into commands
+	if(commandString.length == 5){
+
+		//Replace 2nd to last character 8 with an A
+		if (commandString.charAt(3) == "8"){
+			commandString = commandString.replaceAt(3, " A");
+		}
+
+		//Replace 2nd to last character 3 with an E
+		if (commandString.charAt(3) == " E"){
+			
+		}
+
+	}
+
+
+	// Remove Hyphens
+	while(commandString.includes("-")){
+		commandsString = commandString.replace("-", "");
+	}
+
+	// Replace 2 with to
+	if(commandString.charAt(2) == "2"){
+		commandString = commandString.replaceAt(2, " to");
+	}
+
+	// Replace 6 with takes
+	if(commandString.charAt(2) == "6"){
+		commandString = commandString.replaceAt(2, " takes");
+	}
+
+	// Replace starting 8 with A
+	if(commandString.charAt(0) == "8"){
+		commandString = commandString.replaceAt(0, "A");
+	}
+
+	// Replace Bee with B
+	while(commandString.includes("bee")){
+		commandsString = commandString.replace("bee", "B");
+	}
+
+	// Replace be with B
+	while(commandString.includes("be")){
+		commandsString = commandString.replace("be", "B");
+	}
+
+	// Replace see with C
+	while(commandString.includes("see")){
+		commandsString = commandString.replace("see", "C");
+	}
+
+	// Replace the word "anyone" with "E1"
+	while(commandString.includes("anyone")){
+		commandsString = commandString.replace("anyone", "E1");
+	}
+
+	// Replace one with 1
+	while(commandString.includes("one")){
+		commandsString = commandString.replace("one", "1");
+	}
+
+	// Replace Tree with 3
+	while(commandString.includes("tree")){
+		commandsString = commandString.replace("tree", "3");
+	}
+
+	// Replace a "33" start with "E3"
+	if(commandString.substring(0,2) == "33" ){
+		commandsString = commandString.replace("33", "E3");
+	}
+
+	// Replace the word "East" with "E"
+	while(commandString.includes("east")){
+		commandsString = commandString.replace("east", "E");
+	}
+
+	// Replace every "P" with a "B"
+	while(commandString.includes("p")){
+		commandsString = commandString.replace("p", "B");
+	}
+
+	// Replace an ending "A" with an "8"
+	if(commandString.charAt(commandString.length - 1) == "a"){
+		commandString = commandString.replaceAt((commandString.length - 1), "8");
+	}
+
+	// Replace the word "beat" with "B"
+	while(commandString.includes("beat")){
+		commandsString = commandString.replace("beat", "B");
+	}
+
+	// Replace the word "bah" with "B8"
+	while(commandString.includes("bah")){
+		commandsString = commandString.replace("bah", "B8");
+	}
+
+	// Replace every "V" with a "B"
+	while(commandString.includes("v")){
+		commandsString = commandString.replace("v", "B");
+	}
+
+	//Replace the word "for" with the number "4"
+	while(commandString.includes("for")){
+		commandsString = commandString.replace("for", "4");
+	}
+
+	// Replace the word "before" with "B4"
+	if(commandString.includes("before")){
+
+	}
+
+	while(commandString.includes("before")){
+		commandsString = commandString.replace("before", "B4");
+	}
+
+	// Remove "th" that may appear after any number
+	while(commandString.includes("th")){
+		commandsString = commandString.replace("th", "");
+	}
+
+	// Replace 2nh3 with "to H3"
+	if(commandString.includes("2nh3")){
+
+	}
+	while(commandString.includes("2nh3")){
+		commandsString = commandString.replace("2nh3", "to H3");
+	}
+
+	return commandString;
+}
+
 
 
 Template.home.events({
